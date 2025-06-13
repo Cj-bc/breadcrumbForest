@@ -47,23 +47,6 @@ public class BreadcrumbForest<T> : IEnumerable<T> where T : IEquatable<T>
         }
     }
 
-    public void Up()
-    {
-        int parentIdx = m_Relations[m_CurrentIdx].Parent;
-        if (parentIdx != -1)
-        {
-            m_CurrentIdx = parentIdx;
-        }
-    }
-
-    public void Down(int childIndex)
-    {
-        ArgumentOutOfRangeException.ThrowIfLessThan(childIndex, 0, "childIndex");
-        ArgumentOutOfRangeException.ThrowIfGreaterThan(childIndex, m_Relations[m_CurrentIdx].Children.Count, "childIndex");
-
-        m_CurrentIdx = m_Relations[m_CurrentIdx].Children[childIndex];
-    }
-
     // Returns true if current is updated, false otherwise.
     public bool SetCurrent(T item)
     {
