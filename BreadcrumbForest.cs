@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Text;
 
-public class RelationTree<T> where T : IEquatable<T>
+public class BreadcrumbForest<T> where T : IEquatable<T>
 {
     internal struct Relation
     {
@@ -19,7 +19,7 @@ public class RelationTree<T> where T : IEquatable<T>
         get => _m_CurrentIdx;
     }
 
-    internal RelationTree(List<T> items, List<Relation> relations)
+    internal BreadcrumbForest(List<T> items, List<Relation> relations)
     {
         m_Items = items;
         m_Relations = relations;
@@ -50,12 +50,12 @@ public class RelationTree<T> where T : IEquatable<T>
         return true;
     }
 
-    public static RelationTree<T> FromItems(Func<Func<T, Item<T>>, Item<T>> reg)
+    public static BreadcrumbForest<T> FromItems(Func<Func<T, Item<T>>, Item<T>> reg)
     {
         List<T> items = [];
-        List<RelationTree<T>.Relation> relations = [];
+        List<BreadcrumbForest<T>.Relation> relations = [];
         reg((i) => new Item<T>(i)).Build(-1, 0, items, relations);
-        return new RelationTree<T>(items, relations);
+        return new BreadcrumbForest<T>(items, relations);
     }
 
     public string ToDisplayString()

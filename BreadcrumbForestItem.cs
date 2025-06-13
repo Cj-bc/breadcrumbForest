@@ -18,18 +18,18 @@ public class Item<T> where T : IEquatable<T>
     public int DecendantsCount() => Children.Select(c => c.DecendantsCount()).Sum();
 
     // Returns index of the last item of this children.
-    internal int Build(int parentIdx, int nextIdx, List<T> registeredItems, List<RelationTree<T>.Relation> registeredRelations)
+    internal int Build(int parentIdx, int nextIdx, List<T> registeredItems, List<BreadcrumbForest<T>.Relation> registeredRelations)
     {
         registeredItems.Add(m_Item);
         if (Children.Count == 0)
         {
-            registeredRelations.Add(new RelationTree<T>.Relation{Parent = parentIdx, Children = []});
+            registeredRelations.Add(new BreadcrumbForest<T>.Relation{Parent = parentIdx, Children = []});
             return nextIdx;
         }
 
         // Insert partial relation record to reserve slot
         // TODO: indexの配布の仕方を工夫すれば一度でいける気もする。が、空間の効率も悪くなるから微妙か
-        registeredRelations.Add(new RelationTree<T>.Relation{Parent = parentIdx, Children = new() { parentIdx + 2 }});
+        registeredRelations.Add(new BreadcrumbForest<T>.Relation{Parent = parentIdx, Children = new() { parentIdx + 2 }});
 
         int lastIdx = parentIdx + 1;
         foreach (var child in Children)
