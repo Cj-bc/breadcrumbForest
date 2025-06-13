@@ -47,6 +47,15 @@ public class BreadcrumbForest<T> : IEnumerable<T> where T : IEquatable<T>
         }
     }
 
+    public void Up()
+    {
+        int parentIdx = m_Relations[m_CurrentIdx].Parent;
+        if (parentIdx != -1)
+        {
+            m_CurrentIdx = parentIdx;
+        }
+    }
+
     // Returns true if current is updated, false otherwise.
     public bool SetCurrent(T item)
     {
