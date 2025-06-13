@@ -1,4 +1,4 @@
-﻿var tree = RelationTree<string>.FromItems(item => 
+var tree = BreadcrumbForest<string>.FromItems(item => 
                                           item("root").WithChildren(
                                               item("root.0"),
                                               item("root.1").WithChildren(
