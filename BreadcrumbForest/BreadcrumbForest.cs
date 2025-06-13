@@ -37,7 +37,6 @@ public class BreadcrumbForest<T> : IEnumerable<T> where T : IEquatable<T>
 
     public List<T> Children => ChildrenOf(m_CurrentIdx);
 
-    private List<T> ChildrenOf(int idx) => m_Relations[idx].Children.Select(i => m_Items[i]).ToList();
 
     // Returns true if current is updated, false otherwise.
     public bool SetCurrent(T item)
@@ -72,6 +71,8 @@ public class BreadcrumbForest<T> : IEnumerable<T> where T : IEquatable<T>
         }
         return "";
     }
+
+    private List<T> ChildrenOf(int idx) => m_Relations[idx].Children.Select(i => m_Items[i]).ToList();
 
     public IEnumerator<T> GetEnumerator()
     {
