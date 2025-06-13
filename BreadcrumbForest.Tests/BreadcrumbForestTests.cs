@@ -258,7 +258,7 @@ public class BreadcrumbForestTests
             )
         );
 
-        List<string> visitedNodes = [];
+        List<string> visitedNodes = [forest.Current];
         
         while (forest.Next())
         {
@@ -298,7 +298,7 @@ public class BreadcrumbForestTests
             )
         );
 
-        List<string> traversalOrder = [];
+        List<string> traversalOrder = [forest.Current];
         
         while (forest.Next())
         {
@@ -324,7 +324,7 @@ public class BreadcrumbForestTests
             )
         );
 
-        List<string> traversalOrder = [];
+        List<string> traversalOrder = [forest.Current];
         
         while (forest.Next())
         {
