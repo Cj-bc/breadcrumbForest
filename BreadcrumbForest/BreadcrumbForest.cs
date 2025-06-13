@@ -28,6 +28,8 @@ public class BreadcrumbForest<T> : IEnumerable<T> where T : IEquatable<T>
             .Select((item, idx) => (item, idx))
             .Where(i => i.item.Parent == -1)
             .Select(i => i.idx).ToList();
+
+        m_CurrentIdx = toLeafNodeIdx(m_RootIndices[0]);
     }
 
     public T Current
@@ -135,6 +137,17 @@ public class BreadcrumbForest<T> : IEnumerable<T> where T : IEquatable<T>
     }
 
     private List<T> ChildrenOf(int idx) => m_Relations[idx].Children.Select(i => m_Items[i]).ToList();
+
+    private int toLeafNodeIdx(int startIdx)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThan(startIdx, 0);
+        ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(startIdx, m_Relations.Count);
+        var children = m_Relations[startIdx].Children;
+
+        return children.Count == 0
+            ? startIdx
+            : toLeafNodeIdx(children[0]);
+    }
 
     public IEnumerator<T> GetEnumerator()
     {
