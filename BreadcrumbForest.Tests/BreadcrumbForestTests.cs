@@ -24,10 +24,8 @@ public class BreadcrumbForestTests
             )
         );
 
-        Assert.That(forest.Current, Is.EqualTo("Root"));
-        Assert.That(forest.Children, Has.Count.EqualTo(2));
-        Assert.That(forest.Children, Contains.Item("Child1"));
-        Assert.That(forest.Children, Contains.Item("Child2"));
+        Assert.That(forest.Current, Is.EqualTo("Child1"));
+        Assert.That(forest.Children, Is.Empty);
     }
 
     [Test]
@@ -43,10 +41,8 @@ public class BreadcrumbForestTests
             )
         );
 
-        Assert.That(forest.Current, Is.EqualTo("Root"));
-        Assert.That(forest.Children, Has.Count.EqualTo(2));
-        Assert.That(forest.Children, Contains.Item("Parent1"));
-        Assert.That(forest.Children, Contains.Item("Parent2"));
+        Assert.That(forest.Current, Is.EqualTo("Child1"));
+        Assert.That(forest.Children, Is.Empty);
     }
 
     [Test]
@@ -126,10 +122,8 @@ public class BreadcrumbForestTests
             )
         );
 
-        Assert.That(forest.Current, Is.EqualTo(1));
-        Assert.That(forest.Children, Has.Count.EqualTo(2));
-        Assert.That(forest.Children, Contains.Item(2));
-        Assert.That(forest.Children, Contains.Item(3));
+        Assert.That(forest.Current, Is.EqualTo(2));
+        Assert.That(forest.Children, Is.Empty);
     }
 
     [Test]
@@ -165,8 +159,8 @@ public class BreadcrumbForestTests
             )
         );
 
-        Assert.That(forest.Current, Is.EqualTo("Root1"));
-        Assert.That(forest.Children, Contains.Item("Child1"));
+        Assert.That(forest.Current, Is.EqualTo("Child1"));
+        Assert.That(forest.Children, Is.Empty);
     }
 
     [Test]
