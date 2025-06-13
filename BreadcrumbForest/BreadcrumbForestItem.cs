@@ -27,13 +27,15 @@ public class Item<T> where T : IEquatable<T>
             return nextIdx;
         }
 
-        // Insert partial relation record to reserve slot
+        // As we don't know children's indices, put empty children to reserver item in the list.
         // TODO: indexの配布の仕方を工夫すれば一度でいける気もする。が、空間の効率も悪くなるから微妙か
-        registeredRelations.Add(new BreadcrumbForest<T>.Relation{Parent = parentIdx, Children = new() { parentIdx + 2 }});
+        registeredRelations.Add(new BreadcrumbForest<T>.Relation{Parent = parentIdx, Children = []});
+        int currentRelationIdx = registeredRelations.Count - 1;
 
         int lastIdx = parentIdx + 1;
         foreach (var child in Children)
         {
+            registeredRelations.ElementAt(currentRelationIdx).Children.Add(lastIdx + 1);
             lastIdx = child.Build(parentIdx + 1, lastIdx + 1, registeredItems, registeredRelations);
         }
         return lastIdx;
