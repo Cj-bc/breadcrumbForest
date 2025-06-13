@@ -47,6 +47,59 @@ public class BreadcrumbForest<T> : IEnumerable<T> where T : IEquatable<T>
         }
     }
 
+
+    // returns fale when end of contents
+    public bool Next()
+    {
+        int _nextIdx = nextIdx(m_CurrentIdx, -1);
+        if (_nextIdx != -1)
+        {
+            m_CurrentIdx = _nextIdx;
+            return true;
+        }
+        return false;
+    }
+    private int nextIdx(int currentIdx, int previousIdx)
+    {
+        List<int> childrenIndices = m_Relations[currentIdx].Children;
+        int parentIdx = m_Relations[currentIdx].Parent;
+
+        if (childrenIndices.Count == 0)
+        {
+            List<int> siblings = parentIdx == -1
+                ? m_RootIndices
+                : m_Relations[parentIdx].Children;
+            int siblingIndex = siblings.FindIndex(i => i.Equals(currentIdx));
+
+            if (siblingIndex < siblings.Count - 1)
+            {
+                return siblings[siblingIndex + 1];
+            }
+
+            // Last sibling
+
+            if (parentIdx == -1) return -1; // Last sibling of root items = no items are left
+
+            return nextIdx(parentIdx, currentIdx);
+        }
+
+        if (previousIdx == -1)
+        {
+            return childrenIndices[0];
+        }
+
+        int previousChildIdx = childrenIndices.FindIndex(i => i.Equals(previousIdx));
+        if (previousChildIdx < childrenIndices.Count - 1)
+        {
+            return childrenIndices[previousChildIdx + 1];
+        }
+        if (parentIdx != -1)
+        {
+            nextIdx(parentIdx, currentIdx);
+        }
+        return -1;
+    }
+
     // Returns true if current is updated, false otherwise.
     public bool SetCurrent(T item)
     {
