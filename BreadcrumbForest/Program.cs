@@ -10,3 +10,14 @@ Console.WriteLine(tree.Current == "root");
 var prev = DateTime.Now;
 Console.WriteLine(tree.Children == new List<string>(){"root.0", "root.1"});
 Console.WriteLine($"Elapsed: {DateTime.Now - prev}");
+
+// Test IEnumerable<T> implementation
+Console.WriteLine("Testing IEnumerable<T>:");
+foreach (var item in tree)
+{
+    Console.WriteLine($"Item: {item}");
+}
+
+// Test LINQ methods (which depend on IEnumerable<T>)
+var allItems = tree.ToList();
+Console.WriteLine($"Total items: {allItems.Count}");

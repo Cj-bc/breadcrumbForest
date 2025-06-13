@@ -1,7 +1,8 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 
-public class BreadcrumbForest<T> where T : IEquatable<T>
+public class BreadcrumbForest<T> : IEnumerable<T> where T : IEquatable<T>
 {
     internal struct Relation
     {
@@ -70,5 +71,15 @@ public class BreadcrumbForest<T> where T : IEquatable<T>
             }
         }
         return "";
+    }
+
+    public IEnumerator<T> GetEnumerator()
+    {
+        return m_Items.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
     }
 }
