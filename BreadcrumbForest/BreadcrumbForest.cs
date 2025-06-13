@@ -37,6 +37,12 @@ public class BreadcrumbForest<T> : IEnumerable<T> where T : IEquatable<T>
 
     public List<T> Children => ChildrenOf(m_CurrentIdx);
 
+    // Returns parent item if available, null if Current item is one of the root.
+    public T? Parent
+    {
+        int parentIdx = m_Relations[m_CurrentIdx].Parent;
+        return parentIdx == -1 ? null : m_Items[parentIdx];
+    }
 
     // Returns true if current is updated, false otherwise.
     public bool SetCurrent(T item)
