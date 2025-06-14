@@ -97,7 +97,7 @@ public class BreadcrumbForest<T> : IEnumerable<T> where T : IEquatable<T>
         }
         if (parentIdx != -1)
         {
-            nextIdx(parentIdx, currentIdx);
+            return nextIdx(parentIdx, currentIdx);
         }
         return -1;
     }
