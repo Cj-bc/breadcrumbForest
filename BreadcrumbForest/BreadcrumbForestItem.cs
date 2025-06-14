@@ -32,11 +32,11 @@ public class Item<T> where T : IEquatable<T>
         registeredRelations.Add(new BreadcrumbForest<T>.Relation{Parent = parentIdx, Children = []});
         int currentRelationIdx = registeredRelations.Count - 1;
 
-        int lastIdx = parentIdx + 1;
+        int lastIdx = nextIdx;
         foreach (var child in Children)
         {
             registeredRelations.ElementAt(currentRelationIdx).Children.Add(lastIdx + 1);
-            lastIdx = child.Build(parentIdx + 1, lastIdx + 1, registeredItems, registeredRelations);
+            lastIdx = child.Build(nextIdx, lastIdx + 1, registeredItems, registeredRelations);
         }
         return lastIdx;
     }
