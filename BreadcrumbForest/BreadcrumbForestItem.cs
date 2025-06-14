@@ -20,6 +20,7 @@ public class Item<T> where T : IEquatable<T>
     // Returns index of the last item of this children.
     internal int Build(int parentIdx, int nextIdx, List<T> registeredItems, List<BreadcrumbForest<T>.Relation> registeredRelations)
     {
+        int currentIdx = nextIdx;
         registeredItems.Add(m_Item);
         if (Children.Count == 0)
         {
@@ -32,11 +33,11 @@ public class Item<T> where T : IEquatable<T>
         registeredRelations.Add(new BreadcrumbForest<T>.Relation{Parent = parentIdx, Children = []});
         int currentRelationIdx = registeredRelations.Count - 1;
 
-        int lastIdx = nextIdx;
+        int lastIdx = currentIdx;
         foreach (var child in Children)
         {
             registeredRelations.ElementAt(currentRelationIdx).Children.Add(lastIdx + 1);
-            lastIdx = child.Build(nextIdx, lastIdx + 1, registeredItems, registeredRelations);
+            lastIdx = child.Build(currentIdx, lastIdx + 1, registeredItems, registeredRelations);
         }
         return lastIdx;
     }
