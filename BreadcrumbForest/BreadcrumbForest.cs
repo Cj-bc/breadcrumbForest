@@ -87,7 +87,13 @@ public class BreadcrumbForest<T> : IEnumerable<T> where T : IEquatable<T>
 
         if (previousIdx == -1)
         {
-            return toLeafNodeIdx(childrenIndices[0]);
+            if (parentIdx == -1)
+            {
+                return -1;
+            } else
+            {
+                return toLeafNodeIdx(childrenIndices[0]);
+            }
         }
 
         int previousChildIdx = childrenIndices.FindIndex(i => i.Equals(previousIdx));
