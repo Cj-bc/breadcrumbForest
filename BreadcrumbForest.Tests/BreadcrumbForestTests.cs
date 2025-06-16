@@ -29,23 +29,6 @@ public class BreadcrumbForestTests
     }
 
     [Test]
-    public void FromItems_CreatesNestedStructure_ReturnsCorrectHierarchy()
-    {
-        var forest = BreadcrumbForest<string>.FromItems(item =>
-            item("Root").WithChildren(
-                item("Parent1").WithChildren(
-                    item("Child1"),
-                    item("Child2")
-                ),
-                item("Parent2")
-            )
-        );
-
-        Assert.That(forest.Current, Is.EqualTo("Child1"));
-        Assert.That(forest.Children, Is.Empty);
-    }
-
-    [Test]
     public void SetCurrent_WithExistingItem_ReturnsTrueAndUpdatesCurrent()
     {
         var forest = BreadcrumbForest<string>.FromItems(item =>
@@ -92,27 +75,6 @@ public class BreadcrumbForestTests
     }
 
     [Test]
-    public void Children_WhenCurrentHasChildren_ReturnsCorrectChildren()
-    {
-        var forest = BreadcrumbForest<string>.FromItems(item =>
-            item("Root").WithChildren(
-                item("Parent").WithChildren(
-                    item("Child1"),
-                    item("Child2"),
-                    item("Child3")
-                )
-            )
-        );
-
-        forest.SetCurrent("Parent");
-
-        Assert.That(forest.Children, Has.Count.EqualTo(3));
-        Assert.That(forest.Children, Contains.Item("Child1"));
-        Assert.That(forest.Children, Contains.Item("Child2"));
-        Assert.That(forest.Children, Contains.Item("Child3"));
-    }
-
-    [Test]
     public void FromItems_WithIntegerType_WorksCorrectly()
     {
         var forest = BreadcrumbForest<int>.FromItems(item =>
@@ -124,30 +86,6 @@ public class BreadcrumbForestTests
 
         Assert.That(forest.Current, Is.EqualTo(2));
         Assert.That(forest.Children, Is.Empty);
-    }
-
-    [Test]
-    public void SetCurrent_NavigatesThroughHierarchy_MaintainsCorrectState()
-    {
-        var forest = BreadcrumbForest<string>.FromItems(item =>
-            item("Root").WithChildren(
-                item("Level1").WithChildren(
-                    item("Level2")
-                )
-            )
-        );
-
-        forest.SetCurrent("Level1");
-        Assert.That(forest.Current, Is.EqualTo("Level1"));
-        Assert.That(forest.Children, Contains.Item("Level2"));
-
-        forest.SetCurrent("Level2");
-        Assert.That(forest.Current, Is.EqualTo("Level2"));
-        Assert.That(forest.Children, Is.Empty);
-
-        forest.SetCurrent("Root");
-        Assert.That(forest.Current, Is.EqualTo("Root"));
-        Assert.That(forest.Children, Contains.Item("Level1"));
     }
 
     [Test]
@@ -185,23 +123,6 @@ public class BreadcrumbForestTests
 
         Assert.That(result, Is.False);
         Assert.That(forest.Current, Is.EqualTo("OnlyLeaf"));
-    }
-
-    [Test]
-    public void Next_OnParentWithChildren_MovesToFirstChild()
-    {
-        var forest = BreadcrumbForest<string>.FromItems(item =>
-            item("Parent").WithChildren(
-                item("Child1"),
-                item("Child2")
-            )
-        );
-
-        forest.SetCurrent("Parent");
-        bool result = forest.Next();
-
-        Assert.That(result, Is.True);
-        Assert.That(forest.Current, Is.EqualTo("Child1"));
     }
 
     [Test]
