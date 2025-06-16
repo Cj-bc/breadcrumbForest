@@ -114,7 +114,7 @@ public class BreadcrumbForest<T> : IEnumerable<T> where T : IEquatable<T>
         if (!m_Items.Contains(item)) return false;
         int idx = m_Items.FindIndex((candidate) => candidate.Equals(item));
 
-        if (idx == -1) return false;
+        if (idx == -1 || m_Relations[idx].Children.Count != 0) return false;
 
         m_CurrentIdx = idx;
         return true;
