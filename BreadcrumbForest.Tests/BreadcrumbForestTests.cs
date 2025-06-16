@@ -61,6 +61,22 @@ public class BreadcrumbForestTests
     }
 
     [Test]
+    public void SetCurrent_WithNonLeafItem_ReturnsFalseAndKeepsCurrent()
+    {
+        var forest = BreadcrumbForest<string>.FromItems(item =>
+            item("Root").WithChildren(
+                item("Child1")
+            )
+        );
+
+        string originalCurrent = forest.Current;
+        bool result = forest.SetCurrent("Root");
+
+        Assert.That(result, Is.False);
+        Assert.That(forest.Current, Is.EqualTo(originalCurrent));
+    }
+
+    [Test]
     public void Children_WhenCurrentHasNoChildren_ReturnsEmptyList()
     {
         var forest = BreadcrumbForest<string>.FromItems(item =>
