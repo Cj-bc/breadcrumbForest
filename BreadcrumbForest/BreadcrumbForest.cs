@@ -12,6 +12,8 @@ public class BreadcrumbForest<T> : IEnumerable<T> where T : IEquatable<T>
 
     private List<T> m_Items;
     private List<Relation> m_Relations;
+    private Dictionary<int, int> m_ParentsMap;
+    private Dictionary<int, List<int> m_ChildrenMap;
     private List<int> m_RootIndices;
     private int _m_CurrentIdx = 0;
     private int m_CurrentIdx
@@ -19,15 +21,16 @@ public class BreadcrumbForest<T> : IEnumerable<T> where T : IEquatable<T>
         set => _m_CurrentIdx = Math.Clamp(value, 0, m_Items.Count - 1);
         get => _m_CurrentIdx;
     }
-
+ 
     internal BreadcrumbForest(List<T> items, List<Relation> relations)
     {
         m_Items = items;
+        m_ParentsMap = relations.Select((item, idx) => (idx, item.Parent)).ToDictionary();
+        m_ChildrenMap = relations.Select((item, idx) => (idx, item.Children)).ToDictionary();
         m_Relations = relations;
-        m_RootIndices = relations
-            .Select((item, idx) => (item, idx))
-            .Where(i => i.item.Parent == -1)
-            .Select(i => i.idx).ToList();
+        m_RootIndices = m_ParentsMap
+            .Where(i => i.Value == -1)
+            .Select(i => i.Key).ToList();
 
         m_CurrentIdx = toLeafNodeIdx(m_RootIndices[0]);
     }
