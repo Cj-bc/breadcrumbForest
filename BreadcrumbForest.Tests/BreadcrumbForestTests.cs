@@ -223,7 +223,7 @@ public class BreadcrumbForestTests
     }
 
     [Test]
-    public void Next_OnNestedStructure_TraversesDepthFirst()
+    public void IEnumerable_OnNestedStructure_TraversesDepthFirst()
     {
         var forest = BreadcrumbForest<string>.FromItems(item =>
             item("1").WithChildren(
@@ -235,18 +235,12 @@ public class BreadcrumbForestTests
             )
         );
 
-        List<string> traversalOrder = [forest.Current];
-        
-        while (forest.Next())
-        {
-            traversalOrder.Add(forest.Current);
-        }
-
+        List<string> traversalOrder = forest.ToList();
         Assert.That(traversalOrder, Is.EqualTo(new[] { "1.1.1", "1.1.2", "1.2" }));
     }
 
     [Test]
-    public void Next_WithMultipleSiblingBranches_TraversesCorrectly()
+    public void IEnumerable_WithMultipleSiblingBranches_TraversesCorrectly()
     {
         var forest = BreadcrumbForest<string>.FromItems(item =>
             item("Root").WithChildren(
@@ -261,13 +255,7 @@ public class BreadcrumbForestTests
             )
         );
 
-        List<string> traversalOrder = [forest.Current];
-        
-        while (forest.Next())
-        {
-            traversalOrder.Add(forest.Current);
-        }
-
+        List<string> traversalOrder = forest.ToList();
         Assert.That(traversalOrder, Is.EqualTo(new[] { "Leaf1", "Leaf2", "Leaf3", "Branch3" }));
     }
 }
