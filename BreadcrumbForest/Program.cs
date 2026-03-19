@@ -29,6 +29,15 @@ foreach (var item in tree)
     Console.WriteLine($"Item: {item}");
 }
 
+if (tree.TryGetSubTree("root.1", out var subtree))
+{
+    Console.WriteLine("Subtree of root.2");
+    foreach (var item in subtree)
+    {
+        Console.WriteLine($"Item: {item}");
+    }
+}
+
 // Test LINQ methods (which depend on IEnumerable<T>)
 var allItems = tree.ToList();
 Console.WriteLine($"Total items: {allItems.Count}");
