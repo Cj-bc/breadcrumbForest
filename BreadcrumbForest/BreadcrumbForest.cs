@@ -13,7 +13,7 @@ public class BreadcrumbForest<T> : IEnumerable<T> where T : IEquatable<T>
     private List<T> m_Items;
     private List<Relation> m_Relations;
     private Dictionary<int, int> m_ParentsMap;
-    private Dictionary<int, List<int> m_ChildrenMap;
+    private Dictionary<int, List<int>> m_ChildrenMap;
     private List<int> m_RootIndices;
     private int _m_CurrentIdx = 0;
     private int m_CurrentIdx
