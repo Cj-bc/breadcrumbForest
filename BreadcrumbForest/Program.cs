@@ -3,7 +3,16 @@ var tree = BreadcrumbForest<string>.FromItems(item =>
                                               item("root.0"),
                                               item("root.1").WithChildren(
                                                   item("root.1.0"),
+                                                  item("root.1.1"),
                                                   item("root.1.2")
+                                              ),
+                                              item("root.2").WithChildren(
+                                                  item("root.2.0"),
+                                                  item("root.2.1").WithChildren(
+                                                      item("root.2.1.0"),
+                                                      item("root.2.1.1")
+                                                  ),
+                                                  item("root.2.2")
                                               )));
 
 Console.WriteLine($"tree.Current == root: {tree.Current == "root"}");
