@@ -6,9 +6,11 @@ var tree = BreadcrumbForest<string>.FromItems(item =>
                                                   item("root.1.2")
                                               )));
 
-Console.WriteLine(tree.Current == "root");
+Console.WriteLine($"tree.Current == root: {tree.Current == "root"}");
+Console.WriteLine($"tree.Current: {tree.Current}");
 var prev = DateTime.Now;
-Console.WriteLine(tree.Children == new List<string>(){"root.0", "root.1"});
+Console.WriteLine($"children == root.0, root.1: {tree.Children == new List<string>(){"root.0", "root.1"}}");
+Console.WriteLine($"children: {tree.Children}");
 Console.WriteLine($"Elapsed: {DateTime.Now - prev}");
 
 // Test IEnumerable<T> implementation
