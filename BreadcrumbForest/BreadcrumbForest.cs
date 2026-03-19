@@ -22,12 +22,12 @@ public class BreadcrumbForest<T> : IEnumerable<T> where T : IEquatable<T>
         get => _m_CurrentIdx;
     }
  
-    internal BreadcrumbForest(List<T> items, List<Relation> relations)
+    internal BreadcrumbForest(IEnumerable<T> items, IEnumerable<Relation> relations)
     {
-        m_Items = items;
+        m_Items = items.ToList();
         m_ParentsMap = relations.Select((item, idx) => (idx, item.Parent)).ToDictionary();
         m_ChildrenMap = relations.Select((item, idx) => (idx, item.Children)).ToDictionary();
-        m_Relations = relations;
+        m_Relations = relations.ToList();
         m_RootIndices = m_ParentsMap
             .Where(i => i.Value == -1)
             .Select(i => i.Key).ToList();
