@@ -160,11 +160,106 @@ public class BreadcrumbForest<T> : IEnumerable<T> where T : IEquatable<T>
 
     public IEnumerator<T> GetEnumerator()
     {
-        return m_Items.GetEnumerator();
+        return new ForestEnumerator<T>(m_Items, m_ParentsMap, m_ChildrenMap);
     }
 
     IEnumerator IEnumerable.GetEnumerator()
     {
         return GetEnumerator();
+    }
+
+    /// Enumerator that only enumerates leaf nodes
+    public class ForestEnumerator<T> : IEnumerator, IEnumerator<T> where T : IEquatable<T>
+    {
+        private List<T> _items = new();
+        private Dictionary<int, int> _parentMap;
+        private Dictionary<int, List<int>> _childrenMap;
+        private int _currentIndex
+        {
+            get => __currentIndex;
+            set => __currentIndex = Math.Clamp(value, 0, (_items.Count == 0) ? 0 : _items.Count - 1);
+        }
+        private int __currentIndex;
+        private bool _beforeEnumeration = true;
+
+        public ForestEnumerator(List<T> items, Dictionary<int, int> parentMap, Dictionary<int, List<int>> childrenMap)
+        {
+            _items = items;
+            _parentMap = parentMap;
+            _childrenMap = childrenMap;
+            _currentIndex = 0;
+        }
+
+        object IEnumerator.Current => (object)Current;
+        public T Current => _items[_currentIndex];
+
+        public bool MoveNext()
+        {
+            if (_beforeEnumeration)
+            {
+                _beforeEnumeration = false;
+                _currentIndex = toLeafNode(0);
+                return true;
+            }
+
+            if (_items.Count <= (_currentIndex - 1)) return false;
+
+            if (TryGetSiblingNode(_currentIndex, out int sibling))
+            {
+                _currentIndex = toLeafNode(sibling);
+                return true;
+            }
+
+            if (TryGetUncleNode(_currentIndex, out int uncleIdx))
+            {
+                _currentIndex = toLeafNode(uncleIdx);
+                return true;
+            }
+
+            return false;
+        }
+
+        public void Reset() => _beforeEnumeration = true;
+
+        private bool TryGetUncleNode(int beg, out int uncleIdx)
+        {
+            if (_parentMap.TryGetValue(beg, out var parent))
+            {
+                return TryGetSiblingNode(parent, out uncleIdx);
+            }
+            uncleIdx = -1;
+            return false;
+        }
+
+        private bool TryGetSiblingNode(int beg, out int siblingIdx)
+        {
+            if (_parentMap.TryGetValue(beg, out var parent)
+                && _childrenMap.TryGetValue(parent, out var siblings)
+                && 1 < siblings.Count)
+            {
+                var youngerSiblings = siblings.SkipWhile(i => i != beg).Skip(1);
+                if (1 <= youngerSiblings.Count())
+                {
+                    siblingIdx = youngerSiblings.ElementAt(0);
+                    return true;
+                }
+            }
+
+            siblingIdx = -1;
+            return false;
+        }
+        private int toLeafNode(int beg)
+        {
+            if (_childrenMap.TryGetValue(beg, out var children) && 1 <= children.Count)
+            {
+                return toLeafNode(children[0]);
+            } else
+            {
+                return beg;
+            }
+        }
+        private bool isLeafNode(int i) => _childrenMap.TryGetValue(i, out var children) && children.Count == 0;
+
+        public void Dispose() {}
     }
 }
