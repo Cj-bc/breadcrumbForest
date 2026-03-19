@@ -42,6 +42,35 @@ public class BreadcrumbForest<T> : IEnumerable<T> where T : IEquatable<T>
 
     public List<T> Children => ChildrenOf(m_CurrentIdx);
 
+    public bool TryGetSubTree(T rootItem, out BreadcrumbForest<T> subtree)
+    {
+        int rootItemIdx = m_Items.FindIndex(i => i.Equals(rootItem));
+        if (rootItemIdx == -1)
+        {
+            subtree = default;
+            return false;
+        }
+        // TODO: As m_ParentsMap/m_ChildrenMap depends on order of
+        // Relations, I cannot remove relations. It might be better to refactor this.
+        var newRelations = m_Relations
+            .Select((relation, idx) =>
+            {
+                if (idx == rootItemIdx)
+                {
+                    return relation with { Parent = -1 };
+                }
+
+                // Remove all current root nodes.
+                if (relation.Parent == -1) relation.Parent = -2;
+                // Remove nodes above new Root.
+                if (relation.Children.Contains(rootItemIdx)) relation.Children = [];
+                return relation;
+            });
+
+        subtree = new BreadcrumbForest<T>(m_Items, newRelations);
+        return true;
+    }
+
     // Returns parent item if available, null if Current item is one of the root.
     public T? Parent
     {
@@ -160,7 +189,7 @@ public class BreadcrumbForest<T> : IEnumerable<T> where T : IEquatable<T>
 
     public IEnumerator<T> GetEnumerator()
     {
-        return new ForestEnumerator<T>(m_Items, m_ParentsMap, m_ChildrenMap);
+        return new ForestEnumerator<T>(m_RootIndices[0], m_Items, m_ParentsMap, m_ChildrenMap);
     }
 
     IEnumerator IEnumerable.GetEnumerator()
@@ -181,13 +210,15 @@ public class BreadcrumbForest<T> : IEnumerable<T> where T : IEquatable<T>
         }
         private int __currentIndex;
         private bool _beforeEnumeration = true;
+        private int _rootIdx;
 
-        public ForestEnumerator(List<T> items, Dictionary<int, int> parentMap, Dictionary<int, List<int>> childrenMap)
+        public ForestEnumerator(int rootIdx, List<T> items, Dictionary<int, int> parentMap, Dictionary<int, List<int>> childrenMap)
         {
             _items = items;
             _parentMap = parentMap;
             _childrenMap = childrenMap;
             _currentIndex = 0;
+            _rootIdx = rootIdx;
         }
 
         object IEnumerator.Current => (object)Current;
@@ -198,7 +229,7 @@ public class BreadcrumbForest<T> : IEnumerable<T> where T : IEquatable<T>
             if (_beforeEnumeration)
             {
                 _beforeEnumeration = false;
-                _currentIndex = toLeafNode(0);
+                _currentIndex = toLeafNode(_rootIdx);
                 return true;
             }
 
